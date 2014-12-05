@@ -33,11 +33,11 @@ class FeatureContext implements Context, CustomSnippetAcceptingContext
     private $fibonacciList;
 
     /**
-     * @Given /^I have the number "([^"]*)"$/
+     * @Given /^I have a Fibonacci Sequence generator$/
      */
-    public function iHaveTheNumber($number)
+    public function iHaveSequence()
     {
-        $this->number=$number;
+
     }
 
     /**
@@ -49,13 +49,38 @@ class FeatureContext implements Context, CustomSnippetAcceptingContext
     }
 
     /**
-     * @Then /^I should get "([^"]*)"$/
+     *  @When /^I ask if the number "([^"]*)" is in the Sequence$/
      */
-    public function iShouldGet($list)
+    public function isTheNumberInSequence($number)
+    {
+        $this->isFiboNumber=Sequence::isFibo($number);
+    }
+
+
+    /**
+     * @Then /^I should get the sequence "([^"]*)"$/
+     */
+    public function iShouldGetSequence($list)
     {
         $result= implode(',', $this->fibonacciList );
         if ($list !== $result) {
             throw new Exception('I should get '.$list. ' and I got '.$result);
         }
     }
+
+    /**
+     * @Then /^I should get "([^"]*)"$/
+     */
+    public function iShouldGet($response) {
+        if ($response == "yes") {
+            if (!$this->isFiboNumber ) {
+                throw new Exception('Number not in Fibonacci sequence');
+            }
+        } else {
+            if ($this->isFiboNumber ) {
+                throw new Exception('Number in Fibonacci sequence');
+            }
+        }
+    }
+
 }
